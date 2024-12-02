@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Portfolio{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Edit Your Portfolio</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {# Portfolio Form Fields #}
+    {% for field in form %}
+    <div class="mb-3">
+        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+        {% if field.name == 'photo' %}
+            <input type="file" name="{{ field.name }}" id="{{ field.id_for_label }}"
+                   class="form-control" {% if field.field.required %}required{% endif %}>
+            {% if form.instance.photo %}
+                <img src="{{ form.instance.photo.url }}" alt="Current photo" class="img-thumbnail mt-2" width="150">
+            {% endif %}
+        {% elif field.is_hidden %}
+            {{ field }}
+        {% else %}
+            {{ field }}
+        {% endif %}
+        {% if field.help_text %}
+            <small class="form-text text-muted">{{ field.help_text }}</small>
+        {% endif %}
+        {% for error in field.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+
+    {# Project Formset #}
+    <h3 class="mt-5 mb-3">Projects</h3>
+    {{ formset.management_form }}
+    {% for project_form in formset %}
+        <div class="project-form mb-4">
+            {% for field in project_form %}
+                <div class="mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <div class="invalid-feedback d-block">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            {% if project_form.instance.pk %}
+                <div class="mb-3">
+                    {{ project_form.DELETE.label_tag }}
+                    {{ project_form.DELETE }}
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addMoreBtn = document.createElement('button');
+        addMoreBtn.type = 'button';
+        addMoreBtn.className = 'btn btn-secondary mt-3';
+        addMoreBtn.textContent = 'Add Another Project';
+        addMoreBtn.addEventListener('click', addProjectForm);
+
+        const formset = document.querySelector('{{ formset.prefix }}');
+        formset.parentNode.insertBefore(addMoreBtn, formset.nextSibling);
+
+        function addProjectForm(e) {
+            e.preventDefault();
+            const totalForms = document.querySelector('#id_{{ formset.prefix }}-TOTAL_FORMS');
+            const currentProjectForms = document.querySelectorAll('.project-form');
+            const formNum = currentProjectForms.length;
+            const newForm = currentProjectForms[0].cloneNode(true);
+
+            newForm.innerHTML = newForm.innerHTML.replace(/-0-/g, `-${formNum}-`);
+            newForm.innerHTML = newForm.innerHTML.replace(/\[0\]/g, `[${formNum}]`);
+
+            totalForms.value = currentProjectForms.length + 1;
+
+            const insertBeforeElement = addMoreBtn;
+            insertBeforeElement.parentNode.insertBefore(newForm, insertBeforeElement);
+
+            newForm.querySelectorAll('input, select, textarea').forEach(input => {
+                input.value = '';
+            });
+        }
+    });
+</script>
+{% endblock %}
+{% comment %} {% extends 'base.html' %}
+
+{% block title %}Edit Portfolio{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Edit Your Portfolio</h2>
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="{{ form.title.id_for_label }}" class="form-label">{{ form.title.label }}</label>
+        {{ form.title.as_widget(attrs={'class': 'form-control'}) }}
+    </div>
+    <div class="mb-3">
+        <label for="{{ form.content.id_for_label }}" class="form-label">{{ form.content.label }}</label>
+        {{ form.content.as_widget(attrs={'class': 'form-control'}) }}
+    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+
+<div class="mt-5">
+    <h3>Preview</h3>
+    <div id="portfolio-preview" class="border p-3">
+        <!-- Portfolio content will be displayed here -->
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // This script will update the preview as the user types
+    document.addEventListener('DOMContentLoaded', function() {
+        const contentField = document.getElementById('{{ form.content.id_for_label }}');
+        const previewDiv = document.getElementById('portfolio-preview');
+
+        function updatePreview() {
+            try {
+                const content = JSON.parse(contentField.value);
+                let previewHtml = `<h1>${content.title || 'Portfolio Title'}</h1>`;
+                if (content.sections) {
+                    content.sections.forEach(section => {
+                        previewHtml += `<h2>${section.title}</h2>`;
+                        previewHtml += `<p>${section.content}</p>`;
+                    });
+                }
+                previewDiv.innerHTML = previewHtml;
+            } catch (e) {
+                previewDiv.innerHTML = '<p>Invalid JSON format</p>';
+            }
+        }
+
+        contentField.addEventListener('input', updatePreview);
+        updatePreview(); // Initial preview
+    });
+</script>
+{% endblock %}  {% endcomment %}

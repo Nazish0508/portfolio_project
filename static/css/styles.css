@@ -1,0 +1,22 @@
+/* Add your custom styles here */
+body {
+    font-family: 'Arial', sans-serif;
+}
+
+.navbar-brand img {
+    max-height: 30px;
+}
+
+.card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-google {
+    background-color: #fff;
+    color: #757575;
+    border-color: #ddd;
+}
+
+.btn-google:hover {
+    background-color: #f1f1f1;
+}

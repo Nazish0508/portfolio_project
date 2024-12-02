@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome to Portfolio Management Platform{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+    <h1 class="display-4">Welcome to Portfolio Management Platform</h1>
+    <p class="lead">Create and showcase your professional portfolio with ease.</p>
+    <hr class="my-4">
+    <p>Join now to start building your digital presence!</p>
+    {% if not user.is_authenticated %}
+        <a class="btn btn-primary btn-lg" href="{% url 'signup' %}" role="button">Sign Up</a>
+        <a class="btn btn-secondary btn-lg" href="{% url 'login' %}" role="button">Login</a>
+    {% else %}
+        <a class="btn btn-primary btn-lg" href="{% url 'choose_template' %}" role="button">Create Portfolio</a>
+    {% endif %}
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <h2>Customizable Templates</h2>
+        <p>Choose from a variety of professional templates to showcase your work.</p>
+    </div>
+    <div class="col-md-4">
+        <h2>Project Categorization</h2>
+        <p>Organize your projects by category for easy navigation and viewing.</p>
+    </div>
+    <div class="col-md-4">
+        <h2>Visitor Feedback</h2>
+        <p>Receive endorsements and feedback from visitors to enhance your credibility.</p>
+    </div>
+</div>
+{% endblock %}

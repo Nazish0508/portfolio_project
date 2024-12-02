@@ -1,0 +1,45 @@
+{% extends 'base.html' %} {% load django_bootstrap5 %} {% load static %}
+{% block title %}Login -Biofolio{% endblock %} {% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <h2 class="card-title text-center mb-4">Sign in to your account</h2>
+        <form method="post">
+          {% csrf_token %} {% bootstrap_form form %}
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary">Sign In</button>
+          </div>
+        </form>
+        <hr />
+        <div class="text-center">
+          {% comment %} <a
+            href="{% url 'social:begin' 'google-oauth2' %}"
+            class="btn btn-outline-secondary"
+          > {% endcomment %}
+            <img
+              src="{% static 'img/google-icon.png' %}"
+              alt="Google"
+              height="20"
+              class="me-2"
+            />
+            Continue with Google
+          </a>
+        </div>
+        <div class="mt-3 text-center">
+          <small>
+            <a href="{% url 'password_reset' %}">Forgot Password?</a>
+          </small>
+        </div>
+        <div class="mt-3 text-center">
+          <small>
+            Don't have an account? <a href="{% url 'signup' %}">Register</a>
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+

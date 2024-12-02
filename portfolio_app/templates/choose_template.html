@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<h2>Choose a Portfolio Template</h2>
+<form method="post">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <img src="{% static 'images/personal-portfolio-website.jpg' %}" class="card-img-top" alt="Template 1">
+                <div class="card-body">
+                    <h5 class="card-title">Minimalist</h5>
+                    <p class="card-text">A clean, simple design perfect for showcasing your work.</p>
+                    <a class="btn btn-primary" href="{% url 'create_portfolio' %}">Select</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <img src="{% static 'images/9adac246-5cfb-4a66-94b7-c12179edf5f1-cover.png' %}" class="card-img-top" alt="Template 2">
+                <div class="card-body">
+                    <h5 class="card-title">Creative</h5>
+                    <p class="card-text">A vibrant design for artists and creative professionals.</p>
+                    <a class="btn btn-primary" href="{% url 'create_portfolio' %}">Select</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <img src="{% static 'images/s7c24s_NN.avif' %}" class="card-img-top" alt="Template 3">
+                <div class="card-body">
+                    <h5 class="card-title">Professional</h5>
+                    <p class="card-text">A sleek design for corporate and business portfolios.</p>
+                    <a class="btn btn-primary" href="{% url 'create_portfolio' %}">Select</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

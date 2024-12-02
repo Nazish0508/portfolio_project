@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ portfolio.name }} - Portfolio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #5d3fd3;
+            --secondary-color: #ffd5d5;
+            --text-color: #333333;
+            --light-color: #ffffff;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            color: var(--text-color);
+        }
+        .navbar {
+            background-color: var(--primary-color);
+            padding: 1rem 0;
+        }
+        .navbar-brand, .nav-link {
+            color: var(--light-color) !important;
+            font-weight: bold;
+        }
+        .hero {
+            background-color: var(--primary-color);
+            color: var(--light-color);
+            padding: 100px 0;
+        }
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+        .hero .name {
+            color: #ffd700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        .hero .tagline {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-bottom: 1.5rem;
+        }
+        .btn-contact {
+            background-color: #ff6b6b;
+            color: var(--light-color);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-contact:hover {
+            background-color: #ff5252;
+        }
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--primary-color);
+        }
+        .about, .services, .projects, .contact {
+            padding: 80px 0;
+        }
+        .about {
+            background-color: var(--light-color);
+        }
+        .services {
+            background-color: var(--secondary-color);
+        }
+        .service-item {
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: var(--light-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .service-item:hover {
+            transform: translateY(-5px);
+        }
+        .service-item i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        .projects {
+            background-color: var(--light-color);
+        }
+        .project-card {
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .project-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .project-card .card-body {
+            padding: 1.5rem;
+        }
+        .contact {
+            background-color: var(--secondary-color);
+        }
+        .social-links a {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            transition: color 0.3s ease;
+        }
+        .social-links a:hover {
+            color: var(--text-color);
+        }
+       
+            .modal-content {
+                border-radius: 10px;
+            }
+            .modal-header {
+                border-bottom: 1px solid #dee2e6;
+            }
+            .btn-close-white {
+                filter: invert(100%);
+            }
+        
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">{{ portfolio.name|default:"Portfolio" }}</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#projects">Projects</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                    <li class="nav-item"><button class="btn btn-contact me-2" onclick="showShareUrl()">Share <span><i class="fa fa-share"></i>
+                    </span></button></li>
+
+                    {% if portfolio.user == request.user %}
+                    <li class="nav-item"><a class="btn btn-light" href="{% url 'edit_portfolio' %}">Edit Portfolio</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="name">{{ portfolio.name|upper }}</p>
+                    <h1>{{ portfolio.tagline }}</h1>
+                    <p class="tagline">{{ portfolio.about_me|truncatewords:20 }}</p>
+                    <a href="#contact" class="btn btn-contact mt-3">Contact Me</a>
+                </div>
+                <div class="col-md-6">
+                    {% if portfolio.photo %}
+                        <img src="{{ portfolio.photo.url }}" alt="{{ portfolio.name }}" class="img-fluid rounded-circle">
+                    {% else %}
+                        <img src="https://via.placeholder.com/400" alt="Profile Image" class="img-fluid rounded-circle">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about" id="about">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>Who I Am</h3>
+                    {{ portfolio.about_me|linebreaks }}
+                </div>
+                <div class="col-md-6">
+                    <h3>My Experience</h3>
+                    {{ portfolio.experience|linebreaks }}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="services" id="services">
+        <div class="container">
+            <h2 class="section-title">My Skills</h2>
+            <div class="row">
+                {% for skill in skills %}
+                    <div class="col-md-4">
+                        <div class="service-item">
+                            <i class="fas fa-check-circle"></i>
+                            <h3>{{ skill }}</h3>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>No skills added yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="projects" id="projects">
+        <div class="container">
+            <h2 class="section-title">My Projects</h2>
+            <div class="row">
+                {% for project in projects %}
+                    <div class="col-md-4">
+                        <div class="card project-card">
+                            {% if project.image %}
+                                <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}">
+                            {% else %}
+                                <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="{{ project.title }}">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ project.title }}</h5>
+                                <p class="card-text">{{ project.description|truncatewords:20 }}</p>
+                                {% if project.url %}
+                                    <a href="{{ project.url }}" class="btn btn-primary" target="_blank">View Project</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>No projects added yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+ 
+<section class="contact" id="contact">
+    <div class="container">
+        <h2 class="section-title">Get In Touch</h2>
+
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Contact Information</h3>
+                <p><i class="fas fa-envelope"></i> {{ portfolio.contact_email }}</p>
+                <p><i class="fas fa-phone"></i> {{ portfolio.contact_phone }}</p>
+                <div class="social-links mt-4">
+                    {% if portfolio.social_linkedin %}
+                        <a href="{{ portfolio.social_linkedin }}" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    {% endif %}
+                    {% if portfolio.social_github %}
+                        <a href="{{ portfolio.social_github }}" target="_blank"><i class="fab fa-github"></i></a>
+                    {% endif %}
+                    {% if portfolio.social_twitter %}
+                        <a href="{{ portfolio.social_twitter }}" target="_blank"><i class="fab fa-twitter"></i></a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h3>Send a Feedback</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">Submit Feedback</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% comment %} {% if portfolio.user == request.user %}
+<section class="feedbacks" id="feedbacks">
+    <div class="container">
+        <h2 class="section-title">Recent Feedbacks</h2>
+        {% for feedback in feedbacks|slice:":5" %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ feedback.name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ feedback.email }}</h6>
+                    <p class="card-text">{{ feedback.message }}</p>
+                    <small class="text-muted">Submitted on {{ feedback.created_at|date:"F d, Y" }}</small>
+                </div>
+            </div>
+        {% empty %}
+            <p>No feedbacks yet.</p>
+        {% endfor %}
+        <a href="{% url 'view_feedbacks' %}" class="btn btn-primary">View All Feedbacks</a>
+    </div>
+</section>
+{% endif %} {% endcomment %}
+
+    <footer class="bg-dark text-light py-4">
+       
+        <div class="modal fade" id="shareUrlModal" tabindex="-1" aria-labelledby="shareUrlModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="shareUrlModalLabel">Share This Portfolio</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h6 class="mb-3">Share this URL with others to view this portfolio:</h6>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="shareUrl" value="{{ request.build_absolute_uri }}" readonly>
+                            <button class="btn btn-primary" type="button" onclick="copyShareUrl()">Copy URL</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <p>&copy; 2023 {{ portfolio.name }}. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showShareUrl() {
+            var shareUrlModal = new bootstrap.Modal(document.getElementById('shareUrlModal'));
+            shareUrlModal.show();
+        }
+
+        function copyShareUrl() {
+            var copyText = document.getElementById("shareUrl");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            alert("Copied the share link: " + copyText.value);
+        }
+    </script>
+</body>
+</html>
